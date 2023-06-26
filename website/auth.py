@@ -2,18 +2,11 @@ import pyrebase
 from flask import Blueprint, render_template, request, flash, redirect, url_for, session
 from requests.exceptions import HTTPError
 from website import firestoreDB
+import json
 
 
-
-firebaseConfig = {
-  "apiKey": "AIzaSyAq4-PRS4d5oOJzMOn_01bkmNrouzRNEu0",
-  "authDomain": "fbtest-ba697.firebaseapp.com",
-  "projectId": "fbtest-ba697",
-  "storageBucket": "fbtest-ba697.appspot.com",
-  "messagingSenderId": "513288965015",
-  "appId": "1:513288965015:web:cb5795979ab959ae7012d2",
-  "databaseURL": "https://fbtest-ba697.firebaseio.com"
-}
+with open("keys/fbConfig.json") as jf:
+    firebaseConfig = json.load(jf)
 firebase = pyrebase.initialize_app(firebaseConfig)
 fbau = firebase.auth()
 fbstor = firebase.storage()
