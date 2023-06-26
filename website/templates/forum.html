@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}ALL NOTES PAGE{% endblock %}
+
+
+{% block content %}  {% endblock %}
+
+
+{% block navigation %}  
+    
+    <div id="navbar">            
+        <div id="btn-home">
+            <a href="{{ url_for('views.userPage', userid=session['userid']) }}">UserPage</a>
+        </div>   
+    </div>        
+    
+{% endblock %}
+
+
+{% block messages %} 
+<div id="allNotes">
+    {% if not sKey %}
+        <h2>All notes (by time):</h2>    
+    {% else %}
+        <h2>Search results for "{{sKey}}":</h2> 
+    {% endif %}
+    <dl>
+        {% for el in noteList %}        
+        <div style="border: 1px solid black;">
+            <dt>{{ el[0]|e }} by: {{ el[2] }}</dt>
+            <dd>{{ el[1]|e }}</dd>                  
+        </div>           
+        {% endfor %}
+    </dl>    
+</div>
+
+<div>
+    <form method="post">
+        <div>
+            <p>Search in notes: <br>
+            <input type="text" id="searchBar" name="searchBar">
+            <button type="submit">Search</button> </p>
+        </div>            
+    </form>    
+</div>
+{% endblock %}

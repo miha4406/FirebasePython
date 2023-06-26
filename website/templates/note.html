@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}NOTE PAGE{% endblock %}
+
+
+{% block content %}  {% endblock %}
+
+
+{% block navigation %}  
+    
+    <div id="navbar">            
+        <div id="btn-home">
+            <a href="{{ url_for('views.userPage', userid=session['userid']) }}">UserPage</a>
+        </div>   
+    </div>        
+    
+{% endblock %}
+
+
+{% block messages %} 
+
+    <form method="post">
+        <div>
+            <p>Edit message: <br>
+            <input type="text" id="note1" name="note1" value="{{session['userdata']['notes'][key]}}" >
+            <button type="submit">Submit</button> </p>
+        </div>            
+    </form>     
+
+{% endblock %}

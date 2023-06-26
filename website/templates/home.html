@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block title %}HOME PAGE{% endblock %}
+
+
+{% block content %}  {% endblock %}
+
+
+{% block navigation %}  
+
+    {% if session["userdata"] %}        
+        <div id="navbar">            
+            <div id="btn-logout">
+                <a href="/logout">LogOut</a>
+            </div>
+            <div id="btn-logout">
+                <a href="/forum">Forum</a>
+            </div>
+        </div>      
+        <div id="avatar">
+            <img src="{{ avaURL }}" width="150" height="150">
+            <form action="{{ url_for('views.uploadAva') }}" method="post">
+                <div>
+                    <p>Change avatar:
+                    <input type="file" id="ava" name="ava" accept="image/png, image/jpeg">
+                    <button type="submit">OK</button> </p>
+                </div>            
+            </form>   
+        </div>  
+        
+    {% else %}  
+        <div id="navbar">            
+            <div id="btn-login">
+                <a href="/login">LogIn</a>
+            </div>
+            <div id="btn-signup">
+                <a href="/signup">SignUp</a>
+            </div>
+        </div>        
+    {% endif %}
+
+{% endblock %}
+
+
+{% block messages %} 
+
+    {% if session["userdata"] %}    
+        Current user: {{ session["userdata"]["email"] }}
+
+        <form method="post">
+            <div>
+                <p>Add message: <br>
+                <input type="text" id="note" name="note" placeholder="Enter a message">
+                <button type="submit">Submit</button> </p>
+            </div>            
+        </form>        
+
+        <div id="oldNotes">
+            <h2>User notes:</h2>
+            <dl>
+                {% for key, value in session["userdata"]["notes"].items() %} 
+                <div style="border: 1px solid black;"> 
+                    <dt>{{ key|e }}</dt>
+                    <dd>{{ value|e }}</dd>
+                    <a href="{{ url_for('views.noteDelete', key=key) }}">Delete </a> &nbsp &nbsp
+                    <a href="{{ url_for('views.noteEdit', key=key) }}"> Edit </a>     
+                </div>
+                {% endfor %}
+            </dl> 
+        </div>        
+
+    {% endif %}
+
+{% endblock %}

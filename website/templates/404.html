@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+        <title>{% block title %}404{% endblock %}</title>
+    </head>
+
+    <body>
+        {% block navigation %}  
+        <div id="navbar">
+            <div id="btn-home">
+                <a href="/">Home</a>
+            </div>            
+        </div>                
+        {% endblock %}
+        
+
+        {% block content %} <h1> 404: Page not found! </h1> {% endblock %}
+        
+    </body>
+
+</html>

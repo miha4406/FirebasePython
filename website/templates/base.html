@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <style> body {width : 30%} </style>
+
+        <title>{% block title %}BASE{% endblock %}</title>
+    </head>
+
+    <body>
+        {% block navigation %}  
+        <div id="navbar">
+            <div id="btn-home">
+                <a href="/">Home</a>
+            </div>
+            <div id="btn-logout">
+                <a href="/logout">LogOut</a>
+            </div>
+            <div id="btn-login">
+                <a href="/login">LogIn</a>
+            </div>
+            <div id="btn-signup">
+                <a href="/signup">SignUp</a>
+            </div>
+        </div>                
+        {% endblock %}
+        
+
+        {% block content %} No content. {% endblock %}
+        
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                {% if category == "error" %}
+                <div style="background-color: brown;">{{message}}</div>       
+                {% elif category == "ok" %}    
+                <div style="background-color: aquamarine">{{message}}</div>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+
+        {% block messages %} {% endblock %}
+
+    </body>
+
+</html>
