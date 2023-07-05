@@ -16,8 +16,8 @@ def userPage(userid):
     avaURL = ""
 
     if request.method == "GET":
-        if userid != session["userid"]: pageNotFound(404) 
-        else:
+        #if userid != session["userid"]: pageNotFound(404) 
+        #else:
             try:
                 avaURL = storage.readAva(session["userid"])
             except:
@@ -97,7 +97,7 @@ def noteEdit(key):
 @views.route("/avatar", methods=["GET", "POST"])
 def uploadAva():
 
-    fName = request.form.get("ava");  print(fName)
+    fName = request.form.get("ava");  #print(fName)
     
     try:
         storage.uploadAva(session["userid"], fName)

@@ -26,6 +26,51 @@
         <input type="password" id="pass" name="pass" placeholder="Enter password">
     </div>    
     <br>
-    <button type="submit">Login</button>
+    <button type="submit" disabled>Login</button>
 </form>
+
+<script src="https://cdn.jsdelivr.net/npm/axios@1.1.2/dist/axios.min.js"></script>
+<script type="module">    
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js'; //"{{ url_for('static', filename='firebase/app/dist/index.mjs') }}";
+    import { getAuth, signInWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js'; //"{{ url_for('static', filename='firebase/auth/dist/index.mjs') }}";
+    
+
+    fetch('/firebase-config')
+    .then(response => response.json())
+    .then(firebaseConfig => {      
+        var app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        var doClick = (event) => jsLoginBtnHandler(auth);
+        document.getElementById("jsLoginBtn").addEventListener("click", doClick );        
+    })
+    .catch(error => {
+        console.error('Error retrieving Firebase configuration:', error);
+    });
+
+    function jsLoginBtnHandler(auth){
+        //event.preventDefault();
+
+        var email = document.getElementById("email").value;
+        var password = document.getElementById("pass").value;
+
+        signInWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {                
+            var creds = JSON.stringify(userCredential);  //alert(cred);         
+
+            axios.post('/login', {"cred": creds}).then(function(response) { window.location = "/"+userCredential.user.uid })
+            .catch(function (error) {console.log(error); });
+        })
+        .catch((error) => {
+            console.error(error);
+        });
+    }
+
+</script>
+  
+
+<button id="jsLoginBtn" >JS Auth</button> //use this!
+
+
 {% endblock %}
+
