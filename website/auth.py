@@ -1,7 +1,7 @@
 import pyrebase
 from flask import Blueprint, render_template, request, flash, redirect, url_for, session, jsonify
 from requests.exceptions import HTTPError
-from website import firestoreDB, model
+from website import fsConnect #,firestoreDB
 import json
 
 
@@ -15,13 +15,13 @@ fbstor = firebase.storage()
 def addUser(req):    
     user = fbau.create_user_with_email_and_password(req["email"], req["pass1"])  #print(user)
            
-    firestoreDB.registerUser(user)
+    #firestoreDB.registerUser(user)  #need creds!
+    fsConnect.registerUser(user)
     
 
 def logoutUser():
     #fbau.signOut()
-    fbau.current_user = None
-    session.clear()
+    fbau.current_user = None    
     
 
 
@@ -57,16 +57,17 @@ def login():
 
     if request.method == "POST":
 
-        credStr = request.get_json().get("cred", "")  #print(cred.get("cred", ""))
-        cred = json.loads(credStr) #to dict
+        strCred = request.get_json().get("cred", "")  #print(cred.get("cred", ""))
+        dictCred = json.loads(strCred) #to dict
+        session["dictCred"] = dictCred
 
-        if cred:
+        if dictCred:
             flash("Welcome!", category="ok")
 
-            session["userid"] = cred["user"]["uid"]; #print(session["userid"])            
+            session["userid"] = dictCred["user"]["uid"]; #print(session["userid"])            
         else: print("Cred is None!")
-        try:
-            session["userdata"] = firestoreDB.getNotes(session["userid"])
+        try:            
+            session["userdata"] = fsConnect.getNotes(dictCred)
             return redirect(url_for("views.userPage", userid=session["userid"]))
         except HTTPError as er:            
             flash(er.strerror, category="error")  
@@ -83,7 +84,7 @@ def login0():
             flash("Welcome!", category="ok");  #print(fbau.get_account_info(login["idToken"])); 
                                        
             session["userid"] = login["localId"]
-            session["userdata"] = firestoreDB.getNotes(login["localId"])
+            session["userdata"] = firestoreDB.getNotes(login["localId"])            
             return redirect(url_for("views.userPage", userid=login["localId"]))
             #fbau.get_account_info(login["idToken"])['users'][0]['email'],     
             #render_template("home.html", userdata=firestoreDB.getMessages(login["localId"]))                                              
@@ -96,7 +97,7 @@ def login0():
 @auth.route("/logout")
 def logout():
 
-    logoutUser()
+    logoutUser(); session.clear()
 
     return redirect(url_for("views.home" ))
     #return render_template("logout.html")

@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, flash, session, redirect, url_for
-from website import firestoreDB, storage
+from website import storage, fsConnect #,firestoreDB
 
 
 
@@ -30,12 +30,14 @@ def userPage(userid):
         if len(note) < 1: flash("Message too short!", category="error")
         else: 
             try:
-                firestoreDB.addNote(session["userid"], note)
+                #firestoreDB.addNote(session["userid"], note)
+                fsConnect.addNote(session["dictCred"], note)
                 flash("Message added.", category="ok")
             except:     
                 flash("Can't add message to Firestore!", category="error") 
             finally:
-                session["userdata"] = firestoreDB.getNotes(session["userid"])  #not safe?
+                #session["userdata"] = firestoreDB.getNotes(session["userid"])  #not safe?
+                session["userdata"] = fsConnect.getNotes(session["dictCred"])
 
     return render_template("home.html", avaURL=avaURL)
 
@@ -43,7 +45,8 @@ def userPage(userid):
 @views.route("/forum", methods=["GET","POST"])
 def forum():
 
-    noteList = firestoreDB.getAllNotes()  #can be None?
+    #noteList = firestoreDB.getAllNotes()  #can be None?
+    noteList = fsConnect.getAllNotes(session["dictCred"])
 
     if request.method == "GET":
         return render_template("forum.html", noteList=noteList)
@@ -61,12 +64,14 @@ def forum():
 def noteDelete(key):
     #triggers on GET by link
     try:
-        firestoreDB.delNote(session["userid"], key) 
+        #firestoreDB.delNote(session["userid"], key) 
+        fsConnect.delNote(session["dictCred"], key)
         flash("Message deleted.", category="ok")
     except:
         flash("Can't delete!", category="error")  
     finally:
-        session["userdata"] = firestoreDB.getNotes(session["userid"])
+        #session["userdata"] = firestoreDB.getNotes(session["userid"])
+        session["userdata"] = fsConnect.getNotes(session["dictCred"])
 
     return redirect(url_for("views.userPage", userid=session["userid"]))    
 
@@ -84,12 +89,14 @@ def noteEdit(key):
         if len(note) < 1: flash("Message too short!", category="error")
         else:
             try:
-                firestoreDB.editNote(session["userid"], key, note) 
+                #firestoreDB.editNote(session["userid"], key, note) 
+                fsConnect.editNote(session["dictCred"], key, note)
                 flash("Message edited.", category="ok")
             except:
                 flash("Can't edit!", category="error")  
             finally:
-                session["userdata"] = firestoreDB.getNotes(session["userid"])
+                #session["userdata"] = firestoreDB.getNotes(session["userid"])
+                session["userdata"] = fsConnect.getNotes(session["dictCred"])
 
     return redirect(url_for("views.userPage", userid=session["userid"]))
 
